@@ -11,12 +11,19 @@
 typedef struct
 {
 	char name[100];
-	int cards[ROUNDS];
+	int value;
+}card; // struct - card
+
+typedef struct
+{
+	char name[100];
+	card game[ROUNDS];
 	int score;
-}player;
+}player; // struct - player
+
 
 // function prototypes
-void initializePLayer(player* players, int numPPlayers);
+void initializePLayer(player* players, int numPlayers);
 void shuffleCards(int* deck, int size);
 void dealCards(player* players, int numPlayers);
 void playRound(player* players, int numPlayers, int round);
@@ -29,10 +36,34 @@ int menu();
 void main()
 {
 	// variables
-	
+	player players;
+	card cards;
+	int i;
+	int numPlayers;
+	int choice;
+	int currentRound = 0;
+
+	printf("Welcome to the Card Game 'War'\n");
+
+	do 
+	{
+		printf("Enter the number of players playing (2-4): ");
+		scanf("%d", &numPlayers);
+
+		if (numPlayers < 2 || numPlayers > 4) {
+			printf("There must be 2-4 players playing this game.\n");
+		} // while
+
+	} while (numPlayers < 2 || numPlayers > 4); // do-while
+
+	for (i = 0; i < numPlayers; i++)
+	{
+		printf("Enter the name for player %d: ", i + 1);
+		scanf("%s", &players.name);
+	} // for
 } // main
 
-void initializePLayer(player* players, int numPPlayers)
+void initializePLayer(player* players, int numPlayers)
 {
 
 } // initializePLayer
