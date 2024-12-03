@@ -18,7 +18,7 @@ typedef struct
 typedef struct
 {
 	char name[100];
-	card hamd[ROUNDS]; // card struct
+	card hamd[ROUNDS]; // calling the card struct
 	int score;
 }player; // struct - player
 
