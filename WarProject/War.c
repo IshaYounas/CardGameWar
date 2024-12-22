@@ -18,7 +18,7 @@ typedef struct
 typedef struct
 {
 	char name[100];
-	card hamd[ROUNDS]; // calling the card struct
+	card hand[ROUNDS]; // card struct
 	int score;
 }player; // struct - player
 
@@ -27,6 +27,7 @@ void initializeDeck(card* deck);
 void shuffleCards(card* deck);
 void dealCards(player* players, card* pack, int numPlayers);
 void playRound(player* players, int numPlayers, int round);
+void shufflePlayers(player* players, int numPlayers);
 int findWinner(int* playedCards, int numPlayers);
 void saveGame(player* players, int numPlayers, int currentRound);
 int loadGame(player* players, int* numPlayers, int* currentRound);
@@ -59,18 +60,22 @@ void main()
 
 			// asking the user if they want to start a new game
 			printf("Would you like to start a new game? (enter y or n)");
-			scanf("%s", startGame);
-			if (startGame == 'y' || startGame == 'Y')
-			{
-				choice = 1;
-			} // if
+			printf("1. Start New Game\nExit the program\n");
+			scanf("%d", &choice);
 
-			else //(startGame == 'n' || startGame == 'N')
+			if (choice == 2)
 			{
-				choice = 0;
-			} // else 
-		} // if
-	} // if
+				printf("Exiting the game");
+				exit(0);
+			}// if
+
+			else 
+				choice = 1; // else 
+		} // if (!loadGame)
+
+		else
+			printf("Previos games loaded successfully");
+	} // if (choice)
 
 	if (choice == 1)
 	{
@@ -90,7 +95,7 @@ void main()
 		for (i = 0; i < numPlayers; i++)
 		{
 			printf("Enter the name for player %d: ", i + 1);
-			scanf("%s", &players[i].name);
+			scanf("%s", players[i].name);
 			players[i].score = 0;
 		} // for
 	} // if	
@@ -104,6 +109,9 @@ void main()
 	while (currentRound < ROUNDS)
 	{
 		printf("\n----Round %d ---\n", currentRound);
+
+		// calling methods
+		shufflePlayers(players, numPlayers);
 		playRound(players, numPlayers, currentRound);
 		currentRound++;
 
@@ -120,17 +128,35 @@ void main()
 
 void initializeDeck(card* deck)
 {
+	// creating arrays
+	char* suits[] = { "Spades", "Diamonds", "Clubs", "Hearts" };
+	char* values[] = { "2", "3", "4", "5", "6" ,"7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
 
+	int indexDeck = 0; // index of the deck
+	for (int i = 0; i < 4; i++) // looping through suits
+	{
+		for (int j = 0; j < 13; j++) // looping through values
+		{
+			//printf("%s of %s\n", values[j], suits[i]); // printing out the cards
+
+			strcpy(deck[indexDeck].name, values[j]); // copying
+			strcat(deck[indexDeck].name, " of ");   // adding
+			strcat(deck[indexDeck].name, suits[i]); // adding
+
+			deck[indexDeck].value = j + 2; // value of the card deck
+			indexDeck++; // incrementing
+		} // for (j)
+	} // for (i)
 } // initializeDeck
 
 void shuffleCards(card* deck)
 {
-
+	
 } // shuffleCards
 
 void dealCards(player* players, card* deck, int numPlayers)
 {
-
+	
 } // dealCards
 
 void playRound(player* players, int numPlayers, int round)
@@ -138,27 +164,32 @@ void playRound(player* players, int numPlayers, int round)
 
 } // playRound
 
-int findWinner(int* playedCards, int numPlayers)
+void shufflePlayers(player* players, int numPlayers) // similar to shuffleCrads()
 {
+	
+} // shufflePlayers 
 
+int findWinner(player* players, int numPlayers)
+{
+	
 } // findWinner
 
 void saveGame(player* players, int numPlayers, int currentRound)
 {
-
+	
 } // saveGame
 
 int loadGame(player* players, int* numPlayers, int* currentRound)
 {
-
+	
 } // loadGame
 
 void displayGame(player* players, int numPlayers, int currentRound)
 {
-
+	
 } // displayGame
 
 int menu()
 {
-
-} // menu
+	
+} // menu 
