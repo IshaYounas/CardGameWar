@@ -191,5 +191,13 @@ void displayGame(player* players, int numPlayers, int currentRound)
 
 int menu()
 {
-	
+	int choice;
+	printf("Menu\n");
+	printf("1. Continue\n");
+	printf("2. Save Game\n");
+	printf("3. Load Game\n");
+	printf("4. Exit\n");
+	printf("Choose an option: ");
+	scanf("%d", &choice);
+	return choice;
 } // menu 
