@@ -11,14 +11,14 @@
 // creating a struct
 typedef struct
 {
-	char name[100];
+	char name[30];
 	int value;
 }card; // struct - card
 
 typedef struct
 {
-	char name[100];
-	card hand[ROUNDS]; // card struct
+	char name[30];
+	card hand[13]; // card struct
 	int score;
 }player; // struct - player
 
@@ -105,9 +105,7 @@ void main()
 			players[i].score = 0; // initializing the player's score to 0
 		} // for
 
-		// overwriting file with the new saved game (current game that is being played)
 		currentRound = 0;
-		saveGame(players, numPlayers, currentRound);
 	} // if	
 
 	// calling the methods
@@ -118,7 +116,7 @@ void main()
 	// looping the game
 	while (currentRound < ROUNDS) // 13 rounds
 	{
-		printf("\n---- Round %d ---\n", currentRound + 1);
+		printf("\n--- Round %d ---\n", currentRound + 1);
 
 		// calling methods
 		shufflePlayers(players, numPlayers);
@@ -139,23 +137,31 @@ void main()
 
 void initializeDeck(card* deck)
 {
-	// creating arrays
-	char* suits[] = { "Spades", "Diamonds", "Clubs", "Hearts" };
-	char* values[] = { "2", "3", "4", "5", "6" ,"7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
+	// variables
+	int index = 0;
+	const char* suits[] = { "Spades", "Diamonds", "Clubs", "Hearts" };
+	const char* faceNames[] = { "Jack", "Queen", "King", "Ace" };
+	const int faceValues[] = { 11, 12, 13, 14 };
 
-	int indexDeck = 0; // index of the deck
-	for (int i = 0; i < 4; i++) // looping through suits
+	// number cards
+	for (int i = 2; i <= 10; i++) // number cards
 	{
-		for (int j = 0; j < 13; j++) // looping through values
+		for (int j = 0; j < 4; j++) // suits
 		{
-			//printf("%s of %s\n", values[j], suits[i]); // printing out the cards
+			sprintf(deck[index].name, "%d of %s", i, suits[j]);
+			deck[index].value = i; // setting value for number cards
+			index++; // increment
+		} // for (j)
+	} // for (i)
 
-			strcpy(deck[indexDeck].name, values[j]); // copying
-			strcat(deck[indexDeck].name, " of ");   // adding
-			strcat(deck[indexDeck].name, suits[i]); // adding
-
-			deck[indexDeck].value = j + 2; // value of the card deck
-			indexDeck++; // incrementing
+	// face cards
+	for (int i = 0; i < 4; i++) // face cards
+	{
+		for (int j = 0; j < 4; j++) // suits
+		{
+			sprintf(deck[index].name, "%s of %s", faceNames[i], suits[j]);
+			deck[index].value = faceValues[i]; // setting value for face cards
+			index++; // increment
 		} // for (j)
 	} // for (i)
 } // initializeDeck
@@ -208,8 +214,9 @@ void playRound(player* players, int numPlayers, int round)
 	// variables
 	int playedCards[PLAYERS]; // cards which have been played
 	int maxValue = 0;
-	int indexWinner = 0; // player who played highest card
+	int indexWinner = -1; // player who played highest card
 	int pickCard;
+	int maxCardValue = -1;
 
 	for (int i = 0; i < numPlayers; i++)
 	{
@@ -226,46 +233,56 @@ void playRound(player* players, int numPlayers, int round)
 
 		printf("Pick your card: ");
 		scanf("%d", &pickCard);
-
 		pickCard--; // decrement
 
 		// if the card chosen is less than 0 or greater than 13
-		if (pickCard < 0 || pickCard > ROUNDS) 
+		if (pickCard < 0 || pickCard >= ROUNDS) 
 		{
 			printf("Invalid choice. Please choose a card between 1 and %d\n", ROUNDS);
+			i--; // decrement
+			continue;
 		} // if
 
-		// displaying the card to the player that they chose
-		playedCards[i] = players[i].hand[pickCard].value; 
-		printf("\n%s = %s\n", players[i].name, players[i].hand[pickCard].name);
+		card chosenCard = players[i].hand[pickCard];
+		printf("\n%s = %s", players[i].name, chosenCard.name);
 
-		printf("\n");
+		printf("\n--------------------------------\n");
+
+		if (chosenCard.value > maxCardValue)
+		{
+			maxCardValue = chosenCard.value;
+			indexWinner = i;
+		} // if
 
 		// Checking if there is a winner 
 		if (playedCards[i] > maxValue)
 		{
 			maxValue = playedCards[i];
 			indexWinner = i; // updating the winner of this round
-		} // if
+		} // if */
 	} // for (i) 
 
-	printf("Winner of this round is %s\n\n0", players[indexWinner].name); // displaying 
-	players[indexWinner].score++; // incrementing the winner's score
+	if (indexWinner != -1)
+	{
+		players[indexWinner].score+= maxCardValue;
+
+		printf("Winner of round %d is %s with a score of %d\n\n", round + 1, players[indexWinner].name, players[indexWinner].score);
+	} // if
 
 	int choice;
-
 	do
 	{
 		choice = menu(); // calling the method as the choice is prompted in the said method
 		switch (choice)
 		{
 			case 1:
-				printf("Continuing to the next round.\n");
+				printf("Continuing to the next round\n");
 				break;
 
 			case 2:
 				saveGame(players, numPlayers, round + 1);
-				break;
+				printf("Exiting the game\n");
+				exit(0);
 
 			case 3:
 				if (loadGame(players, &numPlayers, &round))
@@ -455,7 +472,7 @@ int menu()
 	printf("1. Continue\n");
 	printf("2. Save Game\n");
 	printf("3. Load Game\n");
-	printf("4. Exit\n");
+	printf("Your choice: ");
 	scanf("%d", &choice);
 	return choice;
 } // menu

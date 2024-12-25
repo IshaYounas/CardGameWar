@@ -1,32 +1,8 @@
-4 players - sarah, beth, alice, lucy
-Next Round: 4
+2 players - tim, bob
+Next Round: 2
 
 Round 1 cards
 
-sarah = Jack of Clubs
+tim = 7 of Hearts
 
-beth = 10 of Diamonds
-
-alice = Jack of Diamonds
-
-lucy = 6 of Hearts
-
-Round 2 cards
-
-sarah = 3 of Clubs
-
-beth = 8 of Clubs
-
-alice = 9 of Diamonds
-
-lucy = King of Hearts
-
-Round 3 cards
-
-sarah = King of Diamonds
-
-beth = 2 of Clubs
-
-alice = 2 of Spades
-
-lucy = Jack of Hearts
+bob = 2 of Spades
