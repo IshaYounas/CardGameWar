@@ -421,7 +421,7 @@ void displayLoadedGame(player* players, int numPlayers) // similar to the loadGa
 				fscanf(loaded, "%*s = %[^\n]\n", cardName); // card name
 				printf("%s = %s\n", players[i].name, cardName);
 			} // for
-
+			 
 			currentRound++; // increment 
 		} // if
 	} // while
