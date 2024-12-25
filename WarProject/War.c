@@ -187,7 +187,17 @@ void shufflePlayers(player* players, int numPlayers) // similar to shuffleCards(
 
 void dealCards(player* players, card* deck, int numPlayers)
 {
-	
+	// variables
+	int indexCard = 0; /// first card
+
+	for (int i = 0; i < ROUNDS; i++) 
+	{
+		for (int j = 0; j < numPlayers; j++)
+		{
+			// assigning cards to the players (in every round and to all players)
+			players[j].hand[i] = deck[indexCard++]; 
+		} // for (j)
+	} // for (i)
 } // dealCards
 
 void playRound(player* players, int numPlayers, int round)
