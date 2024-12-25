@@ -165,11 +165,25 @@ void shuffleCards(card* deck)
 	for (int i = 0; i < 52; i++) 
 	{
 		int num = rand() % 52; //  picking a random card
-		card temp = deck[i]; // swaping the current card with a random one
+		card temp = deck[i]; // swapping the current card with a random one
 		deck[i] = deck[num];
 		deck[num] = temp;
 	} // for
 } // shuffleCards
+
+void shufflePlayers(player* players, int numPlayers) // similar to shuffleCards()
+{
+	// shufflimg players
+	srand(time(NULL)); // random number generator
+
+	for (int i = 0; i < numPlayers; i++)
+	{
+		int playerIndex = rand() % numPlayers; // picking a random player
+		player temp = players[i]; // and them swapping the current player with a random one
+		players[i] = players[playerIndex];
+		players[playerIndex] = temp;
+	} // for
+} // shufflePlayers
 
 void dealCards(player* players, card* deck, int numPlayers)
 {
@@ -179,12 +193,7 @@ void dealCards(player* players, card* deck, int numPlayers)
 void playRound(player* players, int numPlayers, int round)
 {
 
-} // playRound
-
-void shufflePlayers(player* players, int numPlayers) // similar to shuffleCrads()
-{
-	
-} // shufflePlayers 
+} // playRound 
 
 int findWinner(player* players, int numPlayers)
 {
