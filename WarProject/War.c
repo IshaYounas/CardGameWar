@@ -284,9 +284,24 @@ void playRound(player* players, int numPlayers, int round)
 
 } // playRound 
 
+// finding the winner of the game similar to finding nner of the round
 int findWinner(player* players, int numPlayers)
 {
-	
+	// variables
+	int maxScore = 0;
+	int indexWinner = 0;
+
+	for (int i = 0; i < numPlayers; i++)
+	{
+		if (players[i].score > maxScore)
+		{
+			maxScore = players[i].score; 
+			indexWinner = i; // updating the winner
+		} // if 
+	} // for (i)
+
+	return indexWinner; // returning the winner
+
 } // findWinner
 
 void saveGame(player* players, int numPlayers, int currentRound)
