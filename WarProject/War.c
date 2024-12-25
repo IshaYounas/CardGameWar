@@ -250,37 +250,36 @@ void playRound(player* players, int numPlayers, int round)
 	players[indexWinner].score++; // incrementing the winner's score
 
 	int choice;
-	do
+	choice = menu(); // calling the ethod as the choice is prompted in the said method
+
+	switch (choice)
 	{
-		choice = menu(); // calling the ethod as the choice is prompted in the said method
+		case 1:
+			printf("Continuing to the next round.\n");
+			break;
 
-		switch (choice)
-		{
-			case 1:
-				printf("Continuing to the next round.\n");
-				break;
+		case 2:
+			saveGame(players, numPlayers, round + 1);
+			break;
 
-			case 2:
-				saveGame(players, numPlayers, round + 1);
-				printf("Game Saved.\n");
-				return;
+		case 3:
+			if (loadGame(players, &numPlayers, &round))
+			{
+				printf("Previous Game Loaded\n");
+				exit(0);
+			} // if
 
-			case 3:
-				if (loadGame(players, &numPlayers, &round))
-					printf("Previous Game Loaded\n");
+			else
+				printf("No previous Game to load\n");
+			break;
 
-				else
-					printf("No previous Game to load\n");
-				break;
+		case 4:
+			printf("Exiting the game without saving.\n");
+			exit(0); 
 
-			case 4:
-				printf("Exiting the game without saving.\n");
-				exit(0); // exiting the program
-
-			default:
-				printf("Invalid choice\n");
-		} // switch
-	} while (choice != 1);
+		default:
+			printf("Invalid choice\n");
+	} // switch
 
 } // playRound 
 
@@ -306,7 +305,39 @@ int findWinner(player* players, int numPlayers)
 
 void saveGame(player* players, int numPlayers, int currentRound)
 {
-	
+	// file intialization 
+	FILE* save = fopen("saved.txt", "w"); // creating/writing to a file
+
+	if (!save) // file did not open
+	{
+		printf("GAME NOT SAVED!!!\nPlease try again");
+		return;
+	} // if
+
+	// writing to the file
+	fprintf(save, "%d players - ", numPlayers);
+
+	for (int i = 0; i < numPlayers; i++)
+	{
+		fprintf(save, "%s", players[i].name);
+		
+		if (i < numPlayers - 1)
+			fprintf(save, ", "); // seperating the names by commas
+	} // for 
+
+	// evrey round and every player
+	for (int i = 0; i < currentRound; i++)
+	{
+		fprintf(save, "\nRound %d cards\n", i + 1);
+
+		for (int j = 0; j < numPlayers; j++)
+		{
+			fprintf(save, "\n%s = %s\n", players[j].name, players[j].hand[i].name);
+		} // for (j)
+	} // for (i)
+
+	fclose(save); // closing the file
+	printf("Game saved successfully\n");
 } // saveGame
 
 int loadGame(player* players, int* numPlayers, int* currentRound)
