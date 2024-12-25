@@ -1,8 +1,8 @@
-2 players - tim, bob
+2 players - alice, bob
 Next Round: 2
 
 Round 1 cards
 
-tim = 7 of Hearts
+alice = King of Clubs
 
-bob = 2 of Spades
+bob = 8 of Spades

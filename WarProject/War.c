@@ -212,16 +212,22 @@ void dealCards(player* players, card* deck, int numPlayers)
 void playRound(player* players, int numPlayers, int round)
 {
 	// variables
-	int playedCards[PLAYERS]; // cards which have been played
+	int playedCards[PLAYERS] = { 0 }; // cards which have been played
+	int cardCount[15] = { 0 };
+
 	int maxValue = 0;
-	int indexWinner = -1; // player who played highest card
+	int points = 0;
+	int tied = 0;
+
 	int pickCard;
+
+	int indexWinner = -1; // player who played highest card
 	int maxCardValue = -1;
+	int uniqueCard = -1;
 
 	for (int i = 0; i < numPlayers; i++)
 	{
 		printf("%s, these are our cards\n\n", players[i].name);
-		playedCards[i] = players[i].hand[round].value; // getting the value 
 
 		for (int j = 0; j < ROUNDS; j++)
 		{
@@ -231,43 +237,68 @@ void playRound(player* players, int numPlayers, int round)
 
 		printf("\n\n"); // skipping a line
 
-		printf("Pick your card: ");
-		scanf("%d", &pickCard);
-		pickCard--; // decrement
-
-		// if the card chosen is less than 0 or greater than 13
-		if (pickCard < 0 || pickCard >= ROUNDS) 
+		do
 		{
-			printf("Invalid choice. Please choose a card between 1 and %d\n", ROUNDS);
-			i--; // decrement
-			continue;
-		} // if
+			printf("Pick your card (1-%d): ", ROUNDS);
+			scanf("%d", &pickCard);
+			pickCard--; // decrement
+
+			// if the card chosen is less than 0 or greater than 13
+			if (pickCard < 0 || pickCard >= ROUNDS)
+				printf("Invalid choice. Please choose a card between 1 and %d\n", ROUNDS); // if
+		} while (pickCard < 0 || pickCard >= ROUNDS);
 
 		card chosenCard = players[i].hand[pickCard];
+		playedCards[i] = chosenCard.value; // getting the value 
+		cardCount[chosenCard.value]++; // counting how many times the same card occurs
+
 		printf("\n%s = %s", players[i].name, chosenCard.name);
 
 		printf("\n--------------------------------\n");
-
-		if (chosenCard.value > maxCardValue)
+	} // for (i)
+		
+		for (int i = 0; i < numPlayers; i++)
 		{
-			maxCardValue = chosenCard.value;
-			indexWinner = i;
-		} // if
+			if (cardCount[playedCards[i]] == 1)
+			{
+				uniqueCard++; // card is unique
 
-		// Checking if there is a winner 
-		if (playedCards[i] > maxValue)
-		{
-			maxValue = playedCards[i];
-			indexWinner = i; // updating the winner of this round
-		} // if */
-	} // for (i) 
+				// updating the winner if this is the highest unique card
+				if (playedCards[i] > maxValue)
+				{
+					maxValue = playedCards[i];
+					indexWinner = i; // updating the winner of this round
+				} // if 
+			} // if
+		} // for 
 
 	if (indexWinner != -1)
 	{
-		players[indexWinner].score+= maxCardValue;
+		for (int i = 0; i < numPlayers; i++)
+		{
+			// adding the value of the unique card
+			if (cardCount[playedCards[i]] == 1)
+				points += playedCards[i];  // if
+		} // for (i)
+
+		players[indexWinner].score += points;
 
 		printf("Winner of round %d is %s with a score of %d\n\n", round + 1, players[indexWinner].name, players[indexWinner].score);
 	} // if
+
+	else
+	{
+		printf("All players tied this round! Points are rolled over to the next round.\n");
+		tied = 0; /// resetting points
+
+		for (int i = -0; i < numPlayers; i++)
+		{
+			tied += playedCards[i]; // roll over points
+		} // for (i)
+	} // else
+
+	if (tied > 0)
+		printf("Rolling over %d points to the next round.\n", tied);
 
 	int choice;
 	do
@@ -276,7 +307,9 @@ void playRound(player* players, int numPlayers, int round)
 		switch (choice)
 		{
 			case 1:
-				printf("Continuing to the next round\n");
+				// Added informative output statements
+				printf("Continuing to the next round...\n");
+				printf("The winner of round %d is %s with a score of %d\n\n", round + 1, players[indexWinner].name, players[indexWinner].score);
 				break;
 
 			case 2:
@@ -379,7 +412,7 @@ int loadGame(player* players, int* numPlayers, int* currentRound)
 	for (int i = 0; i < *numPlayers; i++)
 	{
 		fscanf(load, "%s", players[i].name);
-		players[i].score = 0; // starting score
+		players[i].score = 0;// starting score
 	} // for
 
 	// parsing the rounds
