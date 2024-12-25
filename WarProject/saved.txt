@@ -1,6 +1,6 @@
-2 players - alice, lucy
+2 players - 3, 2
 Round 1 cards
 
-alice = 7 of Clubs
+3 = 5 of Clubs
 
-lucy = 3 of Hearts
+2 = 10 of Hearts

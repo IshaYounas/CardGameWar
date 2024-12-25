@@ -31,7 +31,6 @@ void shufflePlayers(player* players, int numPlayers);
 int findWinner(int* playedCards, int numPlayers);
 void saveGame(player* players, int numPlayers, int currentRound);
 int loadGame(player* players, int* numPlayers, int* currentRound);
-void displayGame(player* players, int numPlayers, int currentRound);
 int menu();
 
 void main()
@@ -76,7 +75,10 @@ void main()
 		} // if (!loadGame)
 
 		else
+		{
 			printf("Previous games loaded successfully");
+			// displayLoadedGame(players, numPlayers, currentRound);
+		} // else
 	} // if (choice)
 
 	if (choice == 1)
@@ -342,13 +344,44 @@ void saveGame(player* players, int numPlayers, int currentRound)
 
 int loadGame(player* players, int* numPlayers, int* currentRound)
 {
-	
-} // loadGame
+	// file initialization 
+	FILE* load = fopen("saved.txt", "r");
 
-void displayGame(player* players, int numPlayers, int currentRound)
-{
-	
-} // displayGame
+	if (load == NULL) // no file found/no previous game saved
+		return 0; // if
+
+	// reading the file
+	fscanf(load, "%d players - ", numPlayers);
+
+	for (int i = 0; i < *numPlayers; i++)
+	{
+		fscanf(load, "%s", players[i].name);
+		players[i].score = 0; // starting score
+	} // for
+
+	// parsing the rounds
+	char buffer[260];
+	*currentRound = 0;
+
+	while (fgets(buffer, sizeof(buffer), load))
+	{
+		if (strncmp(buffer, "Round", 5) == 0) // checking if the line starts with "Round"
+		{
+			for (int i = 0; i < *numPlayers; i++)
+			{
+				char cardName[100];
+				fscanf(load, "%*s = %[^\n]\n", cardName); // card name
+				strcpy(players[i].hand[*currentRound].name, cardName); // player's hand
+			} // for
+
+			(*currentRound)++; // increment 
+		} // if
+	} // while
+
+	fclose(load);
+	printf("\nGame loaded successfully\n");
+	return 1;
+} // loadGame
 
 int menu()
 {
