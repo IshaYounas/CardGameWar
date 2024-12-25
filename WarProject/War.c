@@ -202,6 +202,85 @@ void dealCards(player* players, card* deck, int numPlayers)
 
 void playRound(player* players, int numPlayers, int round)
 {
+	// variables
+	int playedCards[PLAYERS]; // cards which have been played
+	int maxValue = 0;
+	int indexWinner = 0; // player who played hightest card
+	int pickCard;
+
+	for (int i = 0; i < numPlayers; i++)
+	{
+		printf("%s, these are our cards\n\n", players[i].name);
+		playedCards[i] = players[i].hand[round].value; // geting the value 
+
+		for (int j = 0; j < ROUNDS; j++)
+		{
+			// giving an option of 13 cards for the player to chose from
+			printf("%d: %s || ", j + 1, players[i].hand[j].name);
+		} // for (j)
+
+		printf("\n\n"); // skipping a line
+
+		printf("Pick your card: ");
+		scanf("%d", &pickCard);
+
+		pickCard--; // decrement
+
+		// if the card chosen is less than 0 or greater than 13
+		if (pickCard <= 0 || pickCard > ROUNDS) 
+		{
+			printf("Invalid choice. Please chose a card between 1 and %d\n", ROUNDS);
+		} // if
+
+		// displaying the card to the player that they chose
+		playedCards[i] = players[i].hand[pickCard].value; 
+		printf("\n%s = %s\n", players[i].name, players[i].hand[pickCard].name);
+
+		printf("\n");
+
+		// Checking if there is a winner 
+		if (playedCards[i] > maxValue)
+		{
+			maxValue = playedCards[i];
+			indexWinner = i; // updating the winner of this round
+		} // if
+	} // for (i) 
+
+	printf("Winner of this round is %s\n\n0", players[indexWinner].name); // displaying 
+	players[indexWinner].score++; // incrementing the winner's score
+
+	int choice;
+	do
+	{
+		choice = menu(); // calling the ethod as the choice is prompted in the said method
+
+		switch (choice)
+		{
+			case 1:
+				printf("Continuing to the next round.\n");
+				break;
+
+			case 2:
+				saveGame(players, numPlayers, round + 1);
+				printf("Game Saved.\n");
+				return;
+
+			case 3:
+				if (loadGame(players, &numPlayers, &round))
+					printf("Previous Game Loaded\n");
+
+				else
+					printf("No previous Game to load\n");
+				break;
+
+			case 4:
+				printf("Exiting the game without saving.\n");
+				exit(0); // exiting the program
+
+			default:
+				printf("Invalid choice\n");
+		} // switch
+	} while (choice != 1);
 
 } // playRound 
 
