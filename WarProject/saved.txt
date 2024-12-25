@@ -1,29 +1,109 @@
-2 1
+4 3
 bob 0
-6 of Clubs 6
-6 of Diamonds 6
-Ace of Diamonds 14
-2 of Diamonds 2
-Ace of Spades 14
-3 of Clubs 3
-6 of Spades 6
-4 of Hearts 4
-3 of Hearts 3
-9 of Spades 9
-6 of Hearts 6
-5 of Diamonds 5
-7 of Diamonds 7
+4 of Diamonds
+4
+4 of Spades
+4
+2 of Spades
+2
+7 of Clubs
+7
+5 of Diamonds
+5
+10 of Clubs
+10
+8 of Diamonds
+8
+3 of Spades
+3
+5 of Clubs
+5
+King of Clubs
+13
+2 of Hearts
+2
+Ace of Hearts
+14
+7 of Spades
+7
+lucy 2
+4 of Hearts
+4
+Jack of Clubs
+11
+9 of Clubs
+9
+8 of Clubs
+8
+7 of Diamonds
+7
+3 of Hearts
+3
+7 of Hearts
+7
+Ace of Clubs
+14
+Jack of Hearts
+11
+King of Diamonds
+13
+6 of Clubs
+6
+Queen of Spades
+12
+9 of Diamonds
+9
+mike 0
+5 of Spades
+5
+5 of Hearts
+5
+3 of Diamonds
+3
+6 of Spades
+6
+8 of Spades
+8
+Ace of Spades
+14
+3 of Clubs
+3
+9 of Hearts
+9
+8 of Hearts
+8
+Queen of Diamonds
+12
+4 of Clubs
+4
+10 of Hearts
+10
+Queen of Hearts
+12
 alice 1
-2 of Spades 2
-Jack of Hearts 11
-5 of Hearts 5
-9 of Clubs 9
-Queen of Hearts 12
-4 of Spades 4
-2 of Clubs 2
-9 of Diamonds 9
-Jack of Clubs 11
-5 of Clubs 5
-4 of Diamonds 4
-7 of Clubs 7
-8 of Clubs 8
+10 of Diamonds
+10
+Ace of Diamonds
+14
+9 of Spades
+9
+10 of Spades
+10
+Jack of Diamonds
+11
+Queen of Clubs
+12
+Jack of Spades
+11
+6 of Hearts
+6
+2 of Clubs
+2
+King of Hearts
+13
+2 of Diamonds
+2
+King of Spades
+13
+6 of Diamonds
+6

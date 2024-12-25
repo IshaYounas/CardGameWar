@@ -1,8 +1,8 @@
 // warnings
 #define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
-#include <string.h>
-#include <time.h>
+#include <string.h> // stings
+#include <time.h> // random
 
 // constants
 #define PLAYERS 4
@@ -45,6 +45,7 @@ void main()
 	int currentRound = 0;
 	char startGame[20];
 
+	// greetings
 	printf("Welcome to the Card Game 'War'\n");
 
 	// loading/starting  game
@@ -66,15 +67,16 @@ void main()
 			if (choice == 2)
 			{
 				printf("Exiting the game");
-				exit(0);
+				exit(0); // exiiting the game
 			}// if
 
+			// or else start a new game
 			else 
 				choice = 1; // else 
 		} // if (!loadGame)
 
 		else
-			printf("Previos games loaded successfully");
+			printf("Previous games loaded successfully");
 	} // if (choice)
 
 	if (choice == 1)
@@ -85,19 +87,24 @@ void main()
 			printf("Enter the number of players playing (2-4): ");
 			scanf("%d", &numPlayers);
 
+			// ensuring the players are between 2 and 4
 			if (numPlayers < 2 || numPlayers > 4) {
 				printf("There must be 2-4 players playing this game.\n");
 			} // while
 
 		} while (numPlayers < 2 || numPlayers > 4); // do-while
 
-		// initializing each player with a for loop
+		// getting every players' name
 		for (i = 0; i < numPlayers; i++)
 		{
 			printf("Enter the name for player %d: ", i + 1);
 			scanf("%s", players[i].name);
-			players[i].score = 0;
+			players[i].score = 0; // initilializing the player's score to 0
 		} // for
+
+		// overwriting file with the new saved game (current game that is being played)
+		currentRound = 0;
+		saveGame(players, numPlayers, currentRound);
 	} // if	
 
 	// calling the methods
@@ -106,15 +113,16 @@ void main()
 	dealCards(players, pack, numPlayers);
 
 	// looping the game
-	while (currentRound < ROUNDS)
+	while (currentRound < ROUNDS) // 13 rounds
 	{
 		printf("\n----Round %d ---\n", currentRound);
 
 		// calling methods
 		shufflePlayers(players, numPlayers);
 		playRound(players, numPlayers, currentRound);
-		currentRound++;
 
+		currentRound++; // incrementing the currentRound variable
+		
 		saveGame(players, numPlayers, currentRound);
 	} // while
 
@@ -151,7 +159,16 @@ void initializeDeck(card* deck)
 
 void shuffleCards(card* deck)
 {
-	
+	// shufflimg cards
+	srand(time(NULL)); // random number generator
+
+	for (int i = 0; i < 52; i++) 
+	{
+		int num = rand() % 52; //  picking a random card
+		card temp = deck[i]; // swaping the current card with a random one
+		deck[i] = deck[num];
+		deck[num] = temp;
+	} // for
 } // shuffleCards
 
 void dealCards(player* players, card* deck, int numPlayers)
@@ -191,13 +208,15 @@ void displayGame(player* players, int numPlayers, int currentRound)
 
 int menu()
 {
+	// vraiables
 	int choice;
-	printf("Menu\n");
+
+	// creating an options menu for the user/players to choose from (repeated after every round)
+	printf("Choose an option:\n");
 	printf("1. Continue\n");
 	printf("2. Save Game\n");
 	printf("3. Load Game\n");
 	printf("4. Exit\n");
-	printf("Choose an option: ");
 	scanf("%d", &choice);
 	return choice;
-} // menu 
+} // menu
