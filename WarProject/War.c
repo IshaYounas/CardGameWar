@@ -31,6 +31,7 @@ void shufflePlayers(player* players, int numPlayers);
 int findWinner(int* playedCards, int numPlayers);
 void saveGame(player* players, int numPlayers, int currentRound);
 int loadGame(player* players, int* numPlayers, int* currentRound);
+void displayLoadedGame(player* players, int numPlayers);
 int menu();
 
 void main()
@@ -77,7 +78,7 @@ void main()
 		else
 		{
 			printf("Previous games loaded successfully");
-			// displayLoadedGame(players, numPlayers, currentRound);
+			displayLoadedGame(players, numPlayers);
 		} // else
 	} // if (choice)
 
@@ -382,6 +383,51 @@ int loadGame(player* players, int* numPlayers, int* currentRound)
 	printf("\nGame loaded successfully\n");
 	return 1;
 } // loadGame
+
+void displayLoadedGame(player* players, int numPlayers) // similar to the loadGame method
+{
+	// file intialization
+	FILE* loaded = fopen("saved.txt", "r");
+
+	if (loaded == NULL)
+	{
+		printf("Error: Unable to open file for reading.\n");
+		return;
+	} // if
+
+	printf("Number of players: %d\n", numPlayers);
+
+	// reading names
+	printf("Players:\n");
+
+	for (int i = 0; i < numPlayers; i++)
+	{
+		printf("%s\n", players[i].name);
+	} // for
+
+	// reading cards from each round
+	char buffer[260];
+	int currentRound = 0;
+
+	while (fgets(buffer, sizeof(buffer), loaded))
+	{
+		if (strncmp(buffer, "Round", 5) == 0) // checking if the line starts with "Round"
+		{
+			printf("%s", buffer); // round header
+
+			for (int i = 0; i < numPlayers; i++)
+			{
+				char cardName[100];
+				fscanf(loaded, "%*s = %[^\n]\n", cardName); // card name
+				printf("%s = %s\n", players[i].name, cardName);
+			} // for
+
+			currentRound++; // increment 
+		} // if
+	} // while
+
+	fclose(loaded);
+} // displayLoadedGame
 
 int menu()
 {
