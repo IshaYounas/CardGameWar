@@ -67,7 +67,7 @@ void main()
 			if (choice == 2)
 			{
 				printf("Exiting the game");
-				exit(0); // exiiting the game
+				exit(0); // exiting the game
 			}// if
 
 			// or else start a new game
@@ -77,7 +77,7 @@ void main()
 
 		else
 		{
-			printf("Previous games loaded successfully");
+			printf("Previous game loaded successfully");
 			displayLoadedGame(players, numPlayers);
 		} // else
 	} // if (choice)
@@ -102,7 +102,7 @@ void main()
 		{
 			printf("Enter the name for player %d: ", i + 1);
 			scanf("%s", players[i].name);
-			players[i].score = 0; // initilializing the player's score to 0
+			players[i].score = 0; // initializing the player's score to 0
 		} // for
 
 		// overwriting file with the new saved game (current game that is being played)
@@ -118,7 +118,7 @@ void main()
 	// looping the game
 	while (currentRound < ROUNDS) // 13 rounds
 	{
-		printf("\n----Round %d ---\n", currentRound);
+		printf("\n---- Round %d ---\n", currentRound + 1);
 
 		// calling methods
 		shufflePlayers(players, numPlayers);
@@ -162,7 +162,7 @@ void initializeDeck(card* deck)
 
 void shuffleCards(card* deck)
 {
-	// shufflimg cards
+	// shuffling cards
 	srand(time(NULL)); // random number generator
 
 	for (int i = 0; i < 52; i++) 
@@ -176,7 +176,7 @@ void shuffleCards(card* deck)
 
 void shufflePlayers(player* players, int numPlayers) // similar to shuffleCards()
 {
-	// shufflimg players
+	// shuffling players
 	srand(time(NULL)); // random number generator
 
 	for (int i = 0; i < numPlayers; i++)
@@ -208,13 +208,13 @@ void playRound(player* players, int numPlayers, int round)
 	// variables
 	int playedCards[PLAYERS]; // cards which have been played
 	int maxValue = 0;
-	int indexWinner = 0; // player who played hightest card
+	int indexWinner = 0; // player who played highest card
 	int pickCard;
 
 	for (int i = 0; i < numPlayers; i++)
 	{
 		printf("%s, these are our cards\n\n", players[i].name);
-		playedCards[i] = players[i].hand[round].value; // geting the value 
+		playedCards[i] = players[i].hand[round].value; // getting the value 
 
 		for (int j = 0; j < ROUNDS; j++)
 		{
@@ -230,9 +230,9 @@ void playRound(player* players, int numPlayers, int round)
 		pickCard--; // decrement
 
 		// if the card chosen is less than 0 or greater than 13
-		if (pickCard <= 0 || pickCard > ROUNDS) 
+		if (pickCard < 0 || pickCard > ROUNDS) 
 		{
-			printf("Invalid choice. Please chose a card between 1 and %d\n", ROUNDS);
+			printf("Invalid choice. Please choose a card between 1 and %d\n", ROUNDS);
 		} // if
 
 		// displaying the card to the player that they chose
@@ -253,37 +253,39 @@ void playRound(player* players, int numPlayers, int round)
 	players[indexWinner].score++; // incrementing the winner's score
 
 	int choice;
-	choice = menu(); // calling the ethod as the choice is prompted in the said method
 
-	switch (choice)
+	do
 	{
-		case 1:
-			printf("Continuing to the next round.\n");
-			break;
+		choice = menu(); // calling the method as the choice is prompted in the said method
+		switch (choice)
+		{
+			case 1:
+				printf("Continuing to the next round.\n");
+				break;
 
-		case 2:
-			saveGame(players, numPlayers, round + 1);
-			break;
+			case 2:
+				saveGame(players, numPlayers, round + 1);
+				break;
 
-		case 3:
-			if (loadGame(players, &numPlayers, &round))
-			{
-				printf("Previous Game Loaded\n");
+			case 3:
+				if (loadGame(players, &numPlayers, &round))
+				{
+					printf("Previous Game Loaded\n");
+					exit(0);
+				} // if
+
+				else
+					printf("No previous Game to load\n");
+				break;
+
+			case 4:
+				printf("Exiting the game without saving.\n");
 				exit(0);
-			} // if
 
-			else
-				printf("No previous Game to load\n");
-			break;
-
-		case 4:
-			printf("Exiting the game without saving.\n");
-			exit(0); 
-
-		default:
-			printf("Invalid choice\n");
-	} // switch
-
+			default:
+				printf("Invalid choice. Please choose again\n");
+			} // switch
+	} while (choice < 1 || choice > 4);
 } // playRound 
 
 // finding the winner of the game similar to finding nner of the round
@@ -308,7 +310,7 @@ int findWinner(player* players, int numPlayers)
 
 void saveGame(player* players, int numPlayers, int currentRound)
 {
-	// file intialization 
+	// file initialization 
 	FILE* save = fopen("saved.txt", "w"); // creating/writing to a file
 
 	if (!save) // file did not open
@@ -325,10 +327,12 @@ void saveGame(player* players, int numPlayers, int currentRound)
 		fprintf(save, "%s", players[i].name);
 		
 		if (i < numPlayers - 1)
-			fprintf(save, ", "); // seperating the names by commas
+			fprintf(save, ", "); // separating the names by commas
 	} // for 
 
-	// evrey round and every player
+	fprintf(save, "\nNext Round: %d\n", currentRound + 1); // net round number
+
+	// every round and every player
 	for (int i = 0; i < currentRound; i++)
 	{
 		fprintf(save, "\nRound %d cards\n", i + 1);
@@ -348,7 +352,8 @@ int loadGame(player* players, int* numPlayers, int* currentRound)
 	// file initialization 
 	FILE* load = fopen("saved.txt", "r");
 
-	if (load == NULL) // no file found/no previous game saved
+	// no file found/no previous game saved
+	if (!load) 
 		return 0; // if
 
 	// reading the file
@@ -366,7 +371,14 @@ int loadGame(player* players, int* numPlayers, int* currentRound)
 
 	while (fgets(buffer, sizeof(buffer), load))
 	{
-		if (strncmp(buffer, "Round", 5) == 0) // checking if the line starts with "Round"
+		if (strncmp(buffer, "Next Round", 11) == 0) // checking if the line starts with "Next Round"
+		{
+			int nextRound;
+			sscanf(buffer, "Next Round: %d", &nextRound); 
+			*currentRound = nextRound - 1; 
+		} // if
+
+		else if (strncmp(buffer, "Round", 5) == 0) // checking if the line starts with "Round"
 		{
 			for (int i = 0; i < *numPlayers; i++)
 			{
@@ -395,15 +407,19 @@ void displayLoadedGame(player* players, int numPlayers) // similar to the loadGa
 		return;
 	} // if
 
-	printf("Number of players: %d\n", numPlayers);
+	printf("\n--- Loaded Game ---\n");
+	printf("%d players ", numPlayers);
 
 	// reading names
-	printf("Players:\n");
-
 	for (int i = 0; i < numPlayers; i++)
 	{
-		printf("%s\n", players[i].name);
+		printf("%s", players[i].name);
+		
+		if (i < numPlayers - 1)
+			printf(" ");
 	} // for
+
+	printf("\n\n");
 
 	// reading cards from each round
 	char buffer[260];
@@ -431,7 +447,7 @@ void displayLoadedGame(player* players, int numPlayers) // similar to the loadGa
 
 int menu()
 {
-	// vraiables
+	// variables
 	int choice;
 
 	// creating an options menu for the user/players to choose from (repeated after every round)

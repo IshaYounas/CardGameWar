@@ -1,10 +1,32 @@
-4 players - bob, matt, charlie, alice
+4 players - sarah, beth, alice, lucy
+Next Round: 4
+
 Round 1 cards
 
-bob = King of Hearts
+sarah = Jack of Clubs
 
-matt = 5 of Spades
-
-charlie = 2 of Diamonds
+beth = 10 of Diamonds
 
 alice = Jack of Diamonds
+
+lucy = 6 of Hearts
+
+Round 2 cards
+
+sarah = 3 of Clubs
+
+beth = 8 of Clubs
+
+alice = 9 of Diamonds
+
+lucy = King of Hearts
+
+Round 3 cards
+
+sarah = King of Diamonds
+
+beth = 2 of Clubs
+
+alice = 2 of Spades
+
+lucy = Jack of Hearts
