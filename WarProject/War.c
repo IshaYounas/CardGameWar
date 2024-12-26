@@ -27,6 +27,7 @@ void initializeDeck(card* deck);
 void shuffleCards(card* deck);
 void dealCards(player* players, card* pack, int numPlayers);
 void playRound(player* players, int numPlayers, int round);
+int calculatePoints(int playedCards, int* cardCount, int numPlayers);
 void shufflePlayers(player* players, int numPlayers);
 int findWinner(int* playedCards, int numPlayers);
 void saveGame(player* players, int numPlayers, int currentRound);
@@ -225,57 +226,55 @@ void playRound(player* players, int numPlayers, int round)
 
 	for (int i = 0; i < numPlayers; i++)
 	{
-		printf("%s, these are our cards\n\n", players[i].name);
+		printf("%s, these are your cards\n\n", players[i].name);
 
 		for (int j = 0; j < ROUNDS; j++)
 		{
-			// giving an option of 13 cards for the player to chose from
-			printf("%d: %s || ", j + 1, players[i].hand[j].name);
+			if (players[i].hand[j].value != 0) // skipping over played cards
+			{
+				// giving an option of 13 cards for the player to chose from
+				printf("%d: %s || ", j + 1, players[i].hand[j].name);
+			} // if
 		} // for (j)
 
 		printf("\n\n"); // skipping a line
 
 		do
 		{
-			printf("Pick your card (1-%d): ", ROUNDS);
+			printf("Pick your card (1-13): ");
 			scanf("%d", &pickCard);
 			pickCard--; // decrement
 
-			// if the card chosen is less than 0 or greater than 13
-			if (pickCard < 0 || pickCard >= ROUNDS)
-				printf("Invalid choice. Please choose a card between 1 and %d\n", ROUNDS); // if
-		} while (pickCard < 0 || pickCard >= ROUNDS);
+		} while (pickCard < 0 || pickCard >= ROUNDS || players[i].hand[pickCard].value == 0);
 
 		card chosenCard = players[i].hand[pickCard];
 		playedCards[i] = chosenCard.value; // getting the value 
 		cardCount[chosenCard.value]++; // counting how many times the same card occurs
+		players[i].hand[pickCard].value = 0; // not available
 
 		printf("\n%s = %s", players[i].name, chosenCard.name);
 
 		printf("\n--------------------------------\n");
 	} // for (i)
 		
-		for (int i = 0; i < numPlayers; i++)
+	for (int i = 0; i < numPlayers; i++)
+	{
+		if (cardCount[playedCards[i]] == 1)
 		{
-			if (cardCount[playedCards[i]] == 1)
+			// updating the winner if this is the highest unique card
+			if (playedCards[i] > maxValue)
 			{
-				// updating the winner if this is the highest unique card
-				if (playedCards[i] > maxValue)
-				{
-					maxValue = playedCards[i];
-					indexWinner = i; // updating the winner of this round
-				} // if 
-			} // if
-		} // for 
+				maxValue = playedCards[i];
+				indexWinner = i; // updating the winner of this round
+			} // if 
+		} // if
+	} // for 
+
+	// calling the method to calculate points for each round
+	points = calculatePoints(playedCards, cardCount, numPlayers);
 
 	if (indexWinner != -1)
 	{
-		for (int i = 0; i < numPlayers; i++)
-		{
-			// adding the value of the unique card
-			if (cardCount[playedCards[i]] == 1)
-				points += playedCards[i];  // if
-		} // for (i)
 
 		players[indexWinner].score += points;
 
@@ -285,12 +284,7 @@ void playRound(player* players, int numPlayers, int round)
 	else
 	{
 		printf("All players tied this round! Points are rolled over to the next round.\n");
-		tied = 0; /// resetting points
-
-		for (int i = 0; i < numPlayers; i++)
-		{
-			tied += playedCards[i]; // roll over points
-		} // for (i)
+		tied = points; /// storing tied points for the next round
 	} // else
 
 	if (tied > 0)
@@ -334,7 +328,22 @@ void playRound(player* players, int numPlayers, int round)
 	} while (choice < 1 || choice > 4);
 } // playRound 
 
-// finding the winner of the game similar to finding nner of the round
+int calculatePoints(int playedCards, int* cardCount, int numPlayers)
+{
+	// variable
+	int points = 0;
+
+	for (int i = 0; i < numPlayers; i++)
+	{
+		// adding the value of the unique card
+		if (cardCount[playedCards[i]] == 1)
+			points += playedCards[i];  // if
+	} // for (i)
+
+	return points;
+} // calculatePoints
+
+// finding the winner of the game similar to finding winner of the round
 int findWinner(player* players, int numPlayers)
 {
 	// variables
