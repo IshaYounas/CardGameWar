@@ -222,8 +222,6 @@ void playRound(player* players, int numPlayers, int round)
 	int pickCard;
 
 	int indexWinner = -1; // player who played highest card
-	int maxCardValue = -1;
-	int uniqueCard = -1;
 
 	for (int i = 0; i < numPlayers; i++)
 	{
@@ -261,8 +259,6 @@ void playRound(player* players, int numPlayers, int round)
 		{
 			if (cardCount[playedCards[i]] == 1)
 			{
-				uniqueCard++; // card is unique
-
 				// updating the winner if this is the highest unique card
 				if (playedCards[i] > maxValue)
 				{
@@ -291,7 +287,7 @@ void playRound(player* players, int numPlayers, int round)
 		printf("All players tied this round! Points are rolled over to the next round.\n");
 		tied = 0; /// resetting points
 
-		for (int i = -0; i < numPlayers; i++)
+		for (int i = 0; i < numPlayers; i++)
 		{
 			tied += playedCards[i]; // roll over points
 		} // for (i)
@@ -385,13 +381,14 @@ void saveGame(player* players, int numPlayers, int currentRound)
 	// every round and every player
 	for (int i = 0; i < currentRound; i++)
 	{
-		fprintf(save, "\nRound %d cards\n", i + 1);
+		fprintf(save, "\nRound %d cards:\n", i + 1);
 
-		for (int j = 0; j < numPlayers; j++)
+		for (int j = 0; j < numPlayers; j++) 
 		{
-			fprintf(save, "\n%s = %s\n", players[j].name, players[j].hand[i].name);
+			fprintf(save, "%s = %s\n", players[j].name, players[j].hand[i].name);
 		} // for (j)
 	} // for (i)
+
 
 	fclose(save); // closing the file
 	printf("Game saved successfully\n");
@@ -448,25 +445,26 @@ int loadGame(player* players, int* numPlayers, int* currentRound)
 
 void displayLoadedGame(player* players, int numPlayers) // similar to the loadGame method
 {
-	// file intialization
+	// file initialization
 	FILE* loaded = fopen("saved.txt", "r");
 
-	if (loaded == NULL)
+	if (loaded == NULL) // file cannot open
 	{
 		printf("Error: Unable to open file for reading.\n");
 		return;
 	} // if
 
+	// printing to the screen
 	printf("\n--- Loaded Game ---\n");
 	printf("%d players ", numPlayers);
 
 	// reading names
-	for (int i = 0; i < numPlayers; i++)
+	for (int i = 0; i < numPlayers; i++) 
 	{
 		printf("%s", players[i].name);
 		
 		if (i < numPlayers - 1)
-			printf(" ");
+			printf(" "); // seperating player names with a single space
 	} // for
 
 	printf("\n\n");
@@ -502,9 +500,11 @@ int menu()
 
 	// creating an options menu for the user/players to choose from (repeated after every round)
 	printf("Choose an option:\n");
-	printf("1. Continue\n");
+	printf("1. Continue to the next round\n");
 	printf("2. Save Game\n");
 	printf("3. Load Game\n");
+	printf("4. Output Game Status\n");
+	printf("5. Exit Game\n");
 	printf("Your choice: ");
 	scanf("%d", &choice);
 	return choice;
