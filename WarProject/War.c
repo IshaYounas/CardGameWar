@@ -33,6 +33,7 @@ int findWinner(int* playedCards, int numPlayers);
 void saveGame(player* players, int numPlayers, int currentRound);
 int loadGame(player* players, int* numPlayers, int* currentRound);
 void displayLoadedGame(player* players, int numPlayers);
+void outputStatus(player* players, int numPlayers, int currentRound);
 int menu();
 
 void main()
@@ -314,11 +315,22 @@ void playRound(player* players, int numPlayers, int round)
 					exit(0);
 				} // if
 
+			case 3:
+				if (loadGame(players, &numPlayers, &round))
+				{
+					printf("Previous Game Loaded\n");
+					exit(0);
+				} // if
+
 				else
 					printf("No previous Game to load\n");
 				break;
 
 			case 4:
+				outputStatus(players, numPlayers, round);
+				break;
+
+			case 5:
 				printf("Exiting the game without saving.\n");
 				exit(0);
 
@@ -501,6 +513,15 @@ void displayLoadedGame(player* players, int numPlayers) // similar to the loadGa
 
 	fclose(loaded);
 } // displayLoadedGame
+
+void outputStatus(player* players, int numPlayers, int currentRound)
+{
+	printf("\n--- Game Status ---\n");
+	printf("Current Round: %d\n", currentRound + 1);
+
+	for (int i = 0; i < numPlayers; i++)
+		printf("%s - Score: %d\n", players[i].name, players[i].score);
+} // outputStatus
 
 int menu()
 {
