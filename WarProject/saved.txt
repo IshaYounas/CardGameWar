@@ -1,8 +1,11 @@
-2 players - alice, bob
-Next Round: 2
+2 players - bob 0 , charlie 32 Current Round: 2
 
-Round 1 cards
+Next Round: 3
 
-alice = King of Clubs
+Round 1 cards:
+bob = 2 of Clubs
+charlie = 4 of Hearts
 
-bob = 8 of Spades
+Round 2 cards:
+bob = Jack of Diamonds
+charlie = 9 of Diamonds

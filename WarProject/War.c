@@ -27,9 +27,9 @@ void initializeDeck(card* deck);
 void shuffleCards(card* deck);
 void dealCards(player* players, card* pack, int numPlayers);
 void playRound(player* players, int numPlayers, int round);
-int calculatePoints(int playedCards, int* cardCount, int numPlayers);
+int calculatePoints(int* playedCards, int numPlayers);
 void shufflePlayers(player* players, int numPlayers);
-int findWinner(int* playedCards, int numPlayers);
+int findWinner(player* players, int numPlayers);
 void saveGame(player* players, int numPlayers, int currentRound);
 int loadGame(player* players, int* numPlayers, int* currentRound);
 void displayLoadedGame(player* players, int numPlayers);
@@ -45,7 +45,7 @@ void main()
 	int numPlayers;
 	int choice;
 	int currentRound = 0;
-	char startGame[20];
+	int tied = 0;
 
 	// greetings
 	printf("Welcome to the Card Game 'War'\n");
@@ -223,7 +223,7 @@ void playRound(player* players, int numPlayers, int round)
 
 	int pickCard;
 
-	int indexWinner = -1; // player who played highest card
+	int indexWinner = -1; 
 
 	for (int i = 0; i < numPlayers; i++)
 	{
@@ -231,7 +231,7 @@ void playRound(player* players, int numPlayers, int round)
 
 		for (int j = 0; j < ROUNDS; j++)
 		{
-			if (players[i].hand[j].value != 0) // skipping over played cards
+			if (players[i].hand[j].value != 0)  // skipping over played cards
 			{
 				// giving an option of 13 cards for the player to chose from
 				printf("%d: %s || ", j + 1, players[i].hand[j].name);
@@ -240,13 +240,13 @@ void playRound(player* players, int numPlayers, int round)
 
 		printf("\n\n"); // skipping a line
 
-		do
+		do 
 		{
 			printf("Pick your card (1-13): ");
 			scanf("%d", &pickCard);
 			pickCard--; // decrement
+		} while (pickCard < 0 || pickCard >= ROUNDS || players[i].hand[pickCard].value == 0); // do-while
 
-		} while (pickCard < 0 || pickCard >= ROUNDS || players[i].hand[pickCard].value == 0);
 
 		card chosenCard = players[i].hand[pickCard];
 		playedCards[i] = chosenCard.value; // getting the value 
@@ -258,12 +258,13 @@ void playRound(player* players, int numPlayers, int round)
 		printf("\n--------------------------------\n");
 	} // for (i)
 		
+	// finding the highest unique card
 	for (int i = 0; i < numPlayers; i++)
 	{
 		if (cardCount[playedCards[i]] == 1)
 		{
 			// updating the winner if this is the highest unique card
-			if (playedCards[i] > maxValue)
+			if (cardCount[playedCards[i]] == 1 && playedCards[i] > maxValue) 
 			{
 				maxValue = playedCards[i];
 				indexWinner = i; // updating the winner of this round
@@ -272,7 +273,7 @@ void playRound(player* players, int numPlayers, int round)
 	} // for 
 
 	// calling the method to calculate points for each round
-	points = calculatePoints(playedCards, cardCount, numPlayers);
+	points = calculatePoints(playedCards, numPlayers);
 
 	if (indexWinner != -1)
 	{
@@ -288,8 +289,10 @@ void playRound(player* players, int numPlayers, int round)
 		tied = points; /// storing tied points for the next round
 	} // else
 
-	if (tied > 0)
-		printf("Rolling over %d points to the next round.\n", tied);
+	if (round == ROUNDS - 1 && tied > 0)
+	{
+		printf("Points lost on battlefield: %d\n ", tied);
+	} // if
 
 	int choice;
 	do
@@ -300,20 +303,12 @@ void playRound(player* players, int numPlayers, int round)
 			case 1:
 				// Added informative output statements
 				printf("Continuing to the next round...\n");
-				printf("The winner of round %d is %s with a score of %d\n\n", round + 1, players[indexWinner].name, players[indexWinner].score);
 				break;
 
 			case 2:
 				saveGame(players, numPlayers, round + 1);
-				printf("Exiting the game\n");
+				printf("Saving and Exiting the game\n");
 				exit(0);
-
-			case 3:
-				if (loadGame(players, &numPlayers, &round))
-				{
-					printf("Previous Game Loaded\n");
-					exit(0);
-				} // if
 
 			case 3:
 				if (loadGame(players, &numPlayers, &round))
@@ -337,18 +332,18 @@ void playRound(player* players, int numPlayers, int round)
 			default:
 				printf("Invalid choice. Please choose again\n");
 			} // switch
-	} while (choice < 1 || choice > 4);
+	} while (choice < 1 || choice > 5);
 } // playRound 
 
-int calculatePoints(int playedCards, int* cardCount, int numPlayers)
+int calculatePoints(int* playedCards, int numPlayers)
 {
 	// variable
 	int points = 0;
 
-	for (int i = 0; i < numPlayers; i++)
+	for (int i = 0; i < numPlayers; i++) 
 	{
 		// adding the value of the unique card
-		if (cardCount[playedCards[i]] == 1)
+		if (playedCards[i] != 0)
 			points += playedCards[i];  // if
 	} // for (i)
 
@@ -391,13 +386,15 @@ void saveGame(player* players, int numPlayers, int currentRound)
 
 	for (int i = 0; i < numPlayers; i++)
 	{
-		fprintf(save, "%s", players[i].name);
+		fprintf(save, "%s %d ", players[i].name, players[i].score);
 		
 		if (i < numPlayers - 1)
 			fprintf(save, ", "); // separating the names by commas
 	} // for 
 
-	fprintf(save, "\nNext Round: %d\n", currentRound + 1); // net round number
+	fprintf(save, "Current Round: %d\n", currentRound);
+
+	fprintf(save, "\nNext Round: %d\n", currentRound + 1); // next round number
 
 	// every round and every player
 	for (int i = 0; i < currentRound; i++)
@@ -432,6 +429,8 @@ int loadGame(player* players, int* numPlayers, int* currentRound)
 		fscanf(load, "%s", players[i].name);
 		players[i].score = 0;// starting score
 	} // for
+
+	fscanf(load, "Current Round: %d\n", currentRound);
 
 	// parsing the rounds
 	char buffer[260];
@@ -521,6 +520,8 @@ void outputStatus(player* players, int numPlayers, int currentRound)
 
 	for (int i = 0; i < numPlayers; i++)
 		printf("%s - Score: %d\n", players[i].name, players[i].score);
+
+	printf("Current Round: %d\n", currentRound);
 } // outputStatus
 
 int menu()
@@ -534,7 +535,7 @@ int menu()
 	printf("2. Save Game\n");
 	printf("3. Load Game\n");
 	printf("4. Output Game Status\n");
-	printf("5. Exit Game\n");
+	printf("5. Exit Game without Saving\n");
 	printf("Your choice: ");
 	scanf("%d", &choice);
 	return choice;
