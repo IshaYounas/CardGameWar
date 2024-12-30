@@ -17,7 +17,7 @@ typedef struct
 
 typedef struct
 {
-	char name[30];
+	char name[20];
 	card hand[13]; // card struct
 	int score;
 }player; // struct - player
@@ -42,13 +42,13 @@ void main()
 	player players[PLAYERS];
 	card pack[52];
 	int i;
-	int numPlayers;
+	int numPlayers = 0;
 	int choice;
 	int currentRound = 0;
 	int tied = 0;
 
 	// greetings
-	printf("Welcome to the Card Game 'War'\n");
+	printf("---------------------------------------- Welcome to the Card Game 'War' ----------------------------------------\n");
 
 	// loading/starting  game
 	printf("1. New Game\n2. Load Game\n");
@@ -129,12 +129,10 @@ void main()
 		saveGame(players, numPlayers, currentRound);
 	} // while
 
-	// winner variable calling the findWinner method
-	int winner = findWinner(players, numPlayers);
 
-	// displaying the winner
+	int winner = findWinner(players, numPlayers);
 	printf("\n--- Game Over ---\n");
-	printf("The winner is %s\n", players[winner].name);
+	printf("The winner of the game 'War' is %s with %d points \n", players[winner].name, players[winner].score);
 } // main
 
 void initializeDeck(card* deck)
@@ -227,15 +225,13 @@ void playRound(player* players, int numPlayers, int round)
 
 	for (int i = 0; i < numPlayers; i++)
 	{
-		printf("%s, these are your cards\n\n", players[i].name);
+		printf("%s, these are your cards:\n\n", players[i].name);
 
 		for (int j = 0; j < ROUNDS; j++)
 		{
 			if (players[i].hand[j].value != 0)  // skipping over played cards
-			{
 				// giving an option of 13 cards for the player to chose from
-				printf("%d: %s || ", j + 1, players[i].hand[j].name);
-			} // if
+				printf("%d: %s || ", j + 1, players[i].hand[j].name); // if
 		} // for (j)
 
 		printf("\n\n"); // skipping a line
@@ -275,18 +271,18 @@ void playRound(player* players, int numPlayers, int round)
 	// calling the method to calculate points for each round
 	points = calculatePoints(playedCards, numPlayers);
 
-	if (indexWinner != -1)
+	if (indexWinner == -1)
 	{
 
-		players[indexWinner].score += points;
-
-		printf("Winner of round %d is %s with a score of %d\n\n", round + 1, players[indexWinner].name, players[indexWinner].score);
+		printf("All players tied this round! Points are rolled over to the next round.\n");
+		tied = points; /// storing tied points for the next round
 	} // if
 
 	else
 	{
-		printf("All players tied this round! Points are rolled over to the next round.\n");
-		tied = points; /// storing tied points for the next round
+		players[indexWinner].score += points;
+
+		printf("Winner of round %d is %s with a score of %d\n\n", round + 1, players[indexWinner].name, players[indexWinner].score);
 	} // else
 
 	if (round == ROUNDS - 1 && tied > 0)
@@ -386,10 +382,7 @@ void saveGame(player* players, int numPlayers, int currentRound)
 
 	for (int i = 0; i < numPlayers; i++)
 	{
-		fprintf(save, "%s %d ", players[i].name, players[i].score);
-		
-		if (i < numPlayers - 1)
-			fprintf(save, ", "); // separating the names by commas
+		fprintf(save, "%s ", players[i].name);
 	} // for 
 
 	fprintf(save, "Current Round: %d\n", currentRound);
@@ -426,8 +419,7 @@ int loadGame(player* players, int* numPlayers, int* currentRound)
 
 	for (int i = 0; i < *numPlayers; i++)
 	{
-		fscanf(load, "%s", players[i].name);
-		players[i].score = 0;// starting score
+		fscanf(load, "%s - %d", players[i].name, &players[i].score);
 	} // for
 
 	fscanf(load, "Current Round: %d\n", currentRound);
@@ -476,16 +468,14 @@ void displayLoadedGame(player* players, int numPlayers) // similar to the loadGa
 
 	// printing to the screen
 	printf("\n--- Loaded Game ---\n");
-	printf("%d players ", numPlayers);
+	printf("%d players - ", numPlayers);
 
 	// reading names
-	for (int i = 0; i < numPlayers; i++) 
+	for (int i = 0; i < numPlayers; i++)
 	{
-		printf("%s", players[i].name);
-		
-		if (i < numPlayers - 1)
-			printf(" "); // seperating player names with a single space
-	} // for
+		if (strlen(players[i].name) > 0)
+			printf("%s, ", players[i].name);// if
+	} // if
 
 	printf("\n\n");
 
@@ -505,7 +495,7 @@ void displayLoadedGame(player* players, int numPlayers) // similar to the loadGa
 				fscanf(loaded, "%*s = %[^\n]\n", cardName); // card name
 				printf("%s = %s\n", players[i].name, cardName);
 			} // for
-			 
+
 			currentRound++; // increment 
 		} // if
 	} // while
@@ -540,3 +530,7 @@ int menu()
 	scanf("%d", &choice);
 	return choice;
 } // menu
+
+// some of the code is used from lab exercises and examples uploaded on moodle
+
+// runs well - no errors - a few issues but cannot fix them

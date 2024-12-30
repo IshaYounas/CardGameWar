@@ -1,11 +1,7 @@
-2 players - bob 0 , charlie 32 Current Round: 2
+2 players - a b Current Round: 1
 
-Next Round: 3
+Next Round: 2
 
 Round 1 cards:
-bob = 2 of Clubs
-charlie = 4 of Hearts
-
-Round 2 cards:
-bob = Jack of Diamonds
-charlie = 9 of Diamonds
+a = 2 of Spades
+b = 10 of Diamonds
